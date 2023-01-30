@@ -5,6 +5,11 @@ public class Main {
     public static void main(String[] args) throws SQLException {
         Menu.loginMethod();
     }
+    class currentUser{
+        static String username = null;
+        static int id = Integer.parseInt(null);
+        static String role = null;
+    }
     class Menu{
         static Scanner in= new Scanner(System.in);
         public static void loginMethod() throws SQLException {
