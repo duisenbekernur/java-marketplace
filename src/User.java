@@ -65,15 +65,15 @@ public class User {
     public String toString() {
         return "Username: " + getUsername() + ", role: " + getRole();
     }
-    public static void connection(){
-        try {
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/marketplace", "postgers", "1079");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    } //добавить выбор категории для продавца
+//    public static void connection(){
+//        try {
+//            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/marketplace", "postgers", "1079");
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    } //добавить выбор категории для продавца
     public void insert() throws SQLException {
-        connection();
+        DBconnection.connection();
         ps = connection.prepareStatement("INSERT INTO users (username, password, role) values (?, ? ,?)");
         ps.setString(1, getUsername());
         ps.setString(2, getPassword());

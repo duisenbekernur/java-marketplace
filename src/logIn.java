@@ -16,7 +16,7 @@ public class logIn extends User{
         searchUser(username, pass);
     }
     public static void searchUser(String name, String pass) throws SQLException {
-        connection();
+        DBconnection.connection();
         String role = null;
         rs = statement.executeQuery("SELECT * FROM users");
         while (rs.next()){
