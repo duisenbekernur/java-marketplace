@@ -22,16 +22,16 @@ public class Product {
     }
     public Product() {
     }
-    //надо доделать
-//    public static String searchCategory(String category){
-//        String res = null;
-//        for( int i=0; i<allCategoty.size(); i++){
-//            if(category.equals(allCategoty.get(i))) res = allCategoty.get(i);
-//        }
-//        if(res==null){
-//            System.out.println("There is no such category");
-//        }
-//    }
+    public static String searchCategory(String category){
+        String res = null;
+        for( int i=0; i<allCategoty.size(); i++){
+            if(category.equals(allCategoty.get(i))) res = allCategoty.get(i);
+        }
+        if(res==null){
+            System.out.println("There is no such category");
+        }
+        return category;
+    }
 
     public String getCategory() {
         return category;
@@ -60,24 +60,10 @@ public class Product {
             throw new RuntimeException(e);
         }
     }
-    public void insert() throws SQLException {
-        connection();
-        ps = connection.prepareStatement("INSERT INTO products(name, price, category) VALUES (?, ?, ?)");
-        ps.setString(1, getName());
-        ps.setDouble(2, getPrice());
-        ps.setString(3, getCategory());
-        ps.execute();
-    }
-    public static void infoAllProducts() throws SQLException {
-        rs = ps.executeQuery("SELECT * FROM products");
-        while (rs.next()){
-            System.out.println("ID: " + rs.getInt("id") + ", name: "
-                    + rs.getString("name") + ", price: " + rs.getDouble("price")
-                    + ", category: " + rs.getString("category"));
-        }
-    }
     public static void infoByCategory(String category) throws SQLException {
-        rs = ps.executeQuery("SELECT * FROM products");
+        connection();
+        Statement st = connection.createStatement();
+        rs = st.executeQuery("SELECT * FROM products");
         while (rs.next()){
             if(category.equals(rs.getString("category"))){
                 System.out.println("ID: " + rs.getInt("id") + ", name: "

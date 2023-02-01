@@ -37,7 +37,7 @@ public class Main {
                     """);
             int menu = in.nextInt();
             switch (menu){
-                case 1 -> Product.infoAllProducts();
+    //            case 1 -> Product.infoAllProducts();
 //                case 2 ->
             }
         }
