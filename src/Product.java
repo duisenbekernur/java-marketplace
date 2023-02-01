@@ -1,19 +1,18 @@
 import java.sql.*;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class Product {
     private String name;
     private Double price;
     private String category;
-    private static final List<String> allCategoty = Arrays.asList("computers", "gadgets", "appliances",  "automotive",  "products household goods");
+    private static final List<String> allCategory = Arrays.asList("computers", "gadgets", "appliances",  "automotive",  "products household goods");
     private static Connection connection = null;
     private static PreparedStatement ps = null;
     private static ResultSet rs = null;
 
-    public static void infoAllCategoty(){
-        allCategoty.forEach(System.out::println);
+    public static void infoAllCategory(){
+        allCategory.forEach(System.out::println);
     }
     public Product(String name, Double price, String category) {
         this.name = name;
@@ -61,7 +60,7 @@ public class Product {
         }
     }
     public void insert() throws SQLException {
-        connection();
+        DBconnection.connection();
         ps = connection.prepareStatement("INSERT INTO products(name, price, category) VALUES (?, ?, ?)");
         ps.setString(1, getName());
         ps.setDouble(2, getPrice());
@@ -69,7 +68,9 @@ public class Product {
         ps.execute();
     }
     public static void infoAllProducts() throws SQLException {
-        rs = ps.executeQuery("SELECT * FROM products");
+        DBconnection.connection();
+        Statement st = connection.createStatement();
+        rs = st.executeQuery("SELECT * FROM products");
         while (rs.next()){
             System.out.println("ID: " + rs.getInt("id") + ", name: "
                     + rs.getString("name") + ", price: " + rs.getDouble("price")
@@ -77,7 +78,10 @@ public class Product {
         }
     }
     public static void infoByCategory(String category) throws SQLException {
-        rs = ps.executeQuery("SELECT * FROM products");
+        DBconnection.connection();
+        Statement st = connection.createStatement();
+        rs = st.executeQuery("SELECT * FROM products WHERE = ?");
+
         while (rs.next()){
             if(category.equals(rs.getString("category"))){
                 System.out.println("ID: " + rs.getInt("id") + ", name: "
