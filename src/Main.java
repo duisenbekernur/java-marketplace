@@ -5,6 +5,7 @@ public class Main {
     public static void main(String[] args) throws SQLException {
         Menu.loginMethod();
     }
+
     class Menu{
         static Scanner in= new Scanner(System.in);
         public static void loginMethod() throws SQLException {
@@ -26,12 +27,12 @@ public class Main {
             int menu = in.nextInt();
             switch (menu){
 //                case 1 ->
-//                case 2 ->
+                case 2 -> Product.infoAllCategoty();
             }
         }
         public static void forTheBuyer() throws SQLException {
             System.out.println("""
-                    1) Add a product
+                    1) List of products
                     2) Buy products
                     """);
             int menu = in.nextInt();
