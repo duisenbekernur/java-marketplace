@@ -38,7 +38,7 @@ public class Buyer extends User{
 
     public void insertOrder(int sellerID, ArrayList<Integer> productsList) throws SQLException {
         connection();
-        ps = connection.prepareStatement("INSERT INTO orderes (sellerID, buyerID, products) values (?, ? ,?)");
+        ps = connection.prepareStatement("INSERT INTO orders (sellerID, buyerID, products) values (?, ? ,?)");
         ps.setInt(1, sellerID);
         ps.setInt(2, User.getCurrentUser().getId());
         ps.setArray(3, (Array) productsList);
