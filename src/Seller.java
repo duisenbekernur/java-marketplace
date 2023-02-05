@@ -5,11 +5,11 @@ public class Seller extends User {
         super(username, password, role);
     }
     PreparedStatement ps = null;
-    Connection conn = null;
-    ResultSet rs = null;
+     Connection conn = null;
+     ResultSet rs = null;
 
     public void addProduct(Product product) throws SQLException{
-        DBconnection.connection();
+        conn = DBconnection.connection();
 
         try{
             ps = conn.prepareStatement("INSERT INTO products (name,price,category) VALUES (?,?,?)");
@@ -23,13 +23,20 @@ public class Seller extends User {
 
     };
 
-    public void showOwnProducts() throws SQLException{
-        DBconnection.connection();
-        Statement stmt = conn.createStatement();
-        rs = stmt.executeQuery("SELECT * FROM products");
-        while(rs.next()){
-            System.out.println("Category: " + rs.getString("category") + "ID: " + rs.getInt("id") + ", name: "
-                    + rs.getString("name")  + ", price: " + rs.getDouble("price"));
+    @Override
+    public void showOwnProducts() {
+        try {
+            conn = DBconnection.connection();
+            Statement stmt = connection.createStatement();
+            rs = stmt.executeQuery("SELECT * FROM products");
+            while(rs.next()){
+                if(rs.getInt("id") == User.getCurrentUser().getId()) {
+                    System.out.println("Category: " + rs.getString("category") + "ID: " + rs.getInt("id") + ", name: "
+                            + rs.getString("name")  + ", price: " + rs.getDouble("price"));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
         }
     };
 }

@@ -12,7 +12,7 @@ public class Buyer extends User{
     }
 
     public void printListOfProducts() throws SQLException {
-        connection();
+        connection = DBconnection.connection();
         Statement st = connection.createStatement();
         rs = st.executeQuery("SELECT * FROM products");
         while (rs.next()) {
@@ -22,7 +22,7 @@ public class Buyer extends User{
 
     public long getAllPrice(ArrayList<Integer> productIDs) throws SQLException {
         long counter = 0;
-        connection();
+        connection = DBconnection.connection();
         Statement st = connection.createStatement();
         productDatas = st.executeQuery("SELECT * from products");
         while (productDatas.next()) {
@@ -37,8 +37,8 @@ public class Buyer extends User{
     }
 
     public void insertOrder(int sellerID, ArrayList<Integer> productsList) throws SQLException {
-        connection();
-        ps = connection.prepareStatement("INSERT INTO orders (sellerID, buyerID, products) values (?, ? ,?)");
+        connection = DBconnection.connection();
+        ps = connection.prepareStatement("INSERT INTO orders  (sellerID, buyerID, products) values (?, ? ,?)");
         ps.setInt(1, sellerID);
         ps.setInt(2, User.getCurrentUser().getId());
         ps.setArray(3, (Array) productsList);
@@ -46,7 +46,7 @@ public class Buyer extends User{
     }
 
     public void buyProduct(ArrayList<Integer> productIDs) throws SQLException {
-        connection();
+        connection = DBconnection.connection();
         Statement st = connection.createStatement();
         userDatas = st.executeQuery("SELECT * FROM users");
         productDatas = st.executeQuery("SELECT * FROM products");
@@ -70,13 +70,5 @@ public class Buyer extends User{
 
         ps = connection.prepareStatement("INSERT INTO orders (sellerID, buyerID, products) values (,  , products)");
         ps.execute();
-    }
-
-    public static void connection(){
-        try {
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/marketplace", "postgers", "1079");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

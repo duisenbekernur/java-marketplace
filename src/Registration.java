@@ -9,7 +9,7 @@ public class Registration extends User{
     }
 
     public static void reg() throws SQLException {
-        User user = null;
+        User user = new User();
         System.out.println("Write username: ");
         String username = in.next();
         user.setUsername(username);

@@ -6,9 +6,14 @@ public class User {
     private String password;
     private String role;
     static Connection connection = null;
-    PreparedStatement ps =null;
+    static PreparedStatement ps =null;
     static ResultSet rs = null;
     private static User currentUser = null;
+
+    public User() {
+
+    }
+
     public static User getCurrentUser() {
         return currentUser;
     }
@@ -22,6 +27,7 @@ public class User {
         this.password = password;
         this.role = role;
     }
+
 
     public User(int id, String username, String role) {
         this.id = id;
@@ -72,12 +78,28 @@ public class User {
 //            throw new RuntimeException(e);
 //        }
 //    } //добавить выбор категории для продавца
+    public void showOwnProducts(){
+        try {
+            connection = DBconnection.connection();
+            Statement stmt = connection.createStatement();
+            rs = stmt.executeQuery("SELECT * FROM products");
+            while(rs.next()){
+                if(rs.getInt("seller_id") == User.getCurrentUser().getId()) {
+                    System.out.println("Category: " + rs.getString("category") + ", ID: " + rs.getInt("id") + ", name: "
+                            + rs.getString("name")  + ", price: " + rs.getDouble("price"));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
     public void insert() throws SQLException {
-        DBconnection.connection();
+        connection = DBconnection.connection();
         ps = connection.prepareStatement("INSERT INTO users (username, password, role) values (?, ? ,?)");
+        System.out.println(getUsername() + " " + getPassword() + " " + getRole());
         ps.setString(1, getUsername());
         ps.setString(2, getPassword());
         ps.setString(3, getRole());
-        ps.execute();
+        ps.executeUpdate();
     }
 }
