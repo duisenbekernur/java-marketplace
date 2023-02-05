@@ -1,9 +1,11 @@
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
 public class logIn extends User{
     private static Statement statement= null;
+    static Connection connection = null;
     static Scanner in = new Scanner(System.in);
     public logIn(String username, String password, String role) {
         super(username, password, role);
@@ -16,8 +18,9 @@ public class logIn extends User{
         searchUser(username, pass);
     }
     public static void searchUser(String name, String pass) throws SQLException {
-        DBconnection.connection();
+        connection = DBconnection.connection();
         String role = null;
+        statement = connection.createStatement();
         rs = statement.executeQuery("SELECT * FROM users");
         while (rs.next()){
             if ((name.equals(rs.getString("username"))) && pass.equals(rs.getString("password"))){

@@ -5,9 +5,10 @@ public class DBconnection {
     private PreparedStatement ps = null;
     private ResultSet rs = null;
 
-    public static final void connection() throws SQLException{
+    public static final Connection connection() throws SQLException{
         try {
-            conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/marketplace","postgres","1079");
+            conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/marketplace","postgres","Ernur2005");
+            return conn;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
