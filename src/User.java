@@ -71,7 +71,7 @@ public class User {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    } //добавить выбор категории для продавца
+    }
     public void insert() throws SQLException {
         connection();
         ps = connection.prepareStatement("INSERT INTO users (username, password, role) values (?, ? ,?)");
@@ -79,5 +79,17 @@ public class User {
         ps.setString(2, getPassword());
         ps.setString(3, getRole());
         ps.execute();
+    }
+    public static int getIdCurrencyUser() throws SQLException {
+        connection();
+        int id = 0;
+        Statement st = connection.createStatement();
+        rs = st.executeQuery("SELECT * FROM users");
+        while (rs.next()){
+            if(getCurrentUser().getUsername().equals(rs.getString("username")) && getCurrentUser().getPassword().equals(rs.getString("password")) && getCurrentUser().getRole().equals(rs.getString("role"))){
+                id = rs.getInt("id");
+            }
+        }
+        return id;
     }
 }
