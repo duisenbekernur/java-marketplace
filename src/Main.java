@@ -8,7 +8,7 @@ public class Main {
         Menu.loginMethod();
     }
 
-    static class Menu{
+    static class Menu {
         static Scanner in= new Scanner(System.in);
         public static void loginMethod() throws SQLException {
             System.out.println("""
@@ -49,11 +49,29 @@ public class Main {
             switch (menu){
                 case 1 -> Product.infoAllProducts();
                 case 2 -> {
-                    ArrayList<Integer> idsOfProducts = new ArrayList<>();
-                    while (in.hasNextInt()) {
-                        idsOfProducts.add(in.nextInt());
+                    System.out.println("Enter IDs of products with space and press enter at the end");
+//                    ArrayList<Integer> idsOfProducts = new ArrayList<>();
+//                    while (in.hasNextInt()) {
+//                        idsOfProducts.add(in.nextInt());
+//                    }
+//                    for (Integer id :
+//                            idsOfProducts) {
+//                        System.out.println(id);
+//                    }
+                    int[] inputs = new int[100];
+                    int count = 0;
+                    int maxCount = 10;
+
+                    System.out.println("Enter up to " + maxCount + " integers, press Enter to stop:");
+                    while (in.hasNextLine()) {
+                        inputs[count++] = in.nextInt();
+                        break;
                     }
-                    //
+
+                    System.out.println("User inputs: ");
+                    for (int i = 0; i < count; i++) {
+                        System.out.print(inputs[i] + " ");
+                    }
                 }
                 case 3 -> {
                     User.setCurrentUser(null);

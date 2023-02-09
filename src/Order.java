@@ -32,10 +32,5 @@ public class Order {
         }
     }
 
-//    public static void insert() throws SQLException {
-//        connection();
-//        ps = connection.prepareStatement("INSERT INTO orders(selerid, buyerid, products) VALUES (?, ?, ?)");
-//        ps.setInt(1, User.getIdCurrencyUser(), );
-//    }
 
 }

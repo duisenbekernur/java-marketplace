@@ -1,4 +1,3 @@
-
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -63,6 +62,10 @@ public class Buyer extends User{
                             productArray.add(productIDs.get(i));
                         }
                     }
+                }
+
+                if (productArray.isEmpty()) {
+                    continue;
                 }
 
                 insertOrder(userDatas.getInt("id"), productArray);
