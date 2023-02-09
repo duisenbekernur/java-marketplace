@@ -25,16 +25,16 @@ public class Product {
     }
     public Product() {
     }
-    //надо доделать
-//    public static String searchCategory(String category){
-//        String res = null;
-//        for( int i=0; i<allCategoty.size(); i++){
-//            if(category.equals(allCategoty.get(i))) res = allCategoty.get(i);
-//        }
-//        if(res==null){
-//            System.out.println("There is no such category");
-//        }
-//    }
+    public static String searchCategory(String category){
+        String res = null;
+        for( int i=0; i<allCategoty.size(); i++){
+            if(category.equals(allCategoty.get(i))) res = allCategoty.get(i);
+        }
+        if(res==null){
+            System.out.println("There is no such category");
+        }
+        return category;
+    }
 
     public String getCategory() {
         return category;
@@ -75,7 +75,7 @@ public class Product {
         Product product = new Product(name, price, Product.allCategory.get(categoryID-1));
         product.insert();
     }
-
+    
     public void insert() throws SQLException {
         connection = DBconnection.connection();
         ps = connection.prepareStatement("INSERT INTO products(name, price, seller_id, category) VALUES (?, ?, ?, ?)");
