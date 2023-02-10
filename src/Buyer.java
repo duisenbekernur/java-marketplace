@@ -20,7 +20,7 @@ public class Buyer extends User{
         }
     }
 
-    public long getAllPrice(ArrayList<Integer> productIDs) throws SQLException {
+    public static long getAllPrice(ArrayList<Integer> productIDs) throws SQLException {
         long counter = 0;
         connection = DBconnection.connection();
         Statement st = connection.createStatement();

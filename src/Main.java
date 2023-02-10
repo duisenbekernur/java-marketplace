@@ -60,6 +60,9 @@ public class Main {
                     }
 
                     Buyer.buyProduct(idsOfProducts);
+
+                    System.out.println("All price: " + Buyer.getAllPrice(idsOfProducts));
+                    System.out.println("Thank you for your purchase!!! \n\n");
                 }
                 case 3 -> {
                     User.setCurrentUser(null);
