@@ -7,7 +7,7 @@ public class DBconnection {
 
     public static final Connection connection() throws SQLException{
         try {
-            conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/marketplace","postgres","Ernur2005");
+            conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/marketplace","postgres","Nursat12#");
             return conn;
         } catch (SQLException e) {
             throw new RuntimeException(e);
