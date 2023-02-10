@@ -48,22 +48,7 @@ public class Main {
             int menu = in.nextInt();
             switch (menu){
                 case 1 -> Buyer.printListOfProducts();
-                case 2 -> {
-                    System.out.println("How many products are you want to buy?");
-                    ArrayList<Integer> idsOfProducts = new ArrayList<>();
-                    int numberOfProducts = in.nextInt();
-                    int cnt = 0;
-                    while (cnt++ != numberOfProducts) {
-                        System.out.print(cnt + ") ");
-                        int id = in.nextInt();
-                        idsOfProducts.add(id);
-                    }
-
-                    Buyer.buyProduct(idsOfProducts);
-
-                    System.out.println("All price: " + Buyer.getAllPrice(idsOfProducts));
-                    System.out.println("Thank you for your purchase!!! \n\n");
-                }
+                case 2 -> Buyer.buyProductMenu();
                 case 3 -> {
                     User.setCurrentUser(null);
                     Menu.loginMethod();

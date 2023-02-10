@@ -1,11 +1,13 @@
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Buyer extends User{
     private static Connection connection = null;
     private static PreparedStatement ps = null;;
     private static ResultSet userDatas = null;
     private static ResultSet productDatas = null;
+    static Scanner in = new Scanner(System.in);
 
     public Buyer(int id, String username, String role) {
         super(id, username, role);
@@ -80,5 +82,22 @@ public class Buyer extends User{
 
 
         ps.execute();
+    }
+
+    public static void buyProductMenu() throws SQLException {
+        System.out.println("How many products are you want to buy?");
+        ArrayList<Integer> idsOfProducts = new ArrayList<>();
+        int numberOfProducts = in.nextInt();
+        int cnt = 0;
+        while (cnt++ != numberOfProducts) {
+            System.out.print(cnt + ") ");
+            int id = in.nextInt();
+            idsOfProducts.add(id);
+        }
+
+        Buyer.buyProduct(idsOfProducts);
+
+        System.out.println("All price: " + Buyer.getAllPrice(idsOfProducts));
+        System.out.println("Thank you for your purchase!!! \n\n");
     }
 }
