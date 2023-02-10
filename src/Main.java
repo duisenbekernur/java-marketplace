@@ -47,31 +47,19 @@ public class Main {
                     """);
             int menu = in.nextInt();
             switch (menu){
-                case 1 -> Product.infoAllProducts();
+                case 1 -> Buyer.printListOfProducts();
                 case 2 -> {
-                    System.out.println("Enter IDs of products with space and press enter at the end");
-//                    ArrayList<Integer> idsOfProducts = new ArrayList<>();
-//                    while (in.hasNextInt()) {
-//                        idsOfProducts.add(in.nextInt());
-//                    }
-//                    for (Integer id :
-//                            idsOfProducts) {
-//                        System.out.println(id);
-//                    }
-                    int[] inputs = new int[100];
-                    int count = 0;
-                    int maxCount = 10;
-
-                    System.out.println("Enter up to " + maxCount + " integers, press Enter to stop:");
-                    while (in.hasNextLine()) {
-                        inputs[count++] = in.nextInt();
-                        break;
+                    System.out.println("How many products are you want to buy?");
+                    ArrayList<Integer> idsOfProducts = new ArrayList<>();
+                    int numberOfProducts = in.nextInt();
+                    int cnt = 0;
+                    while (cnt++ != numberOfProducts) {
+                        System.out.print(cnt + ") ");
+                        int id = in.nextInt();
+                        idsOfProducts.add(id);
                     }
 
-                    System.out.println("User inputs: ");
-                    for (int i = 0; i < count; i++) {
-                        System.out.print(inputs[i] + " ");
-                    }
+                    Buyer.buyProduct(idsOfProducts);
                 }
                 case 3 -> {
                     User.setCurrentUser(null);

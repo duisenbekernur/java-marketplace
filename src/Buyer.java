@@ -3,15 +3,15 @@ import java.util.ArrayList;
 
 public class Buyer extends User{
     private static Connection connection = null;
-    private static PreparedStatement ps = null;
-    private static ResultSet userDatas = null;;
+    private static PreparedStatement ps = null;;
+    private static ResultSet userDatas = null;
     private static ResultSet productDatas = null;
 
     public Buyer(int id, String username, String role) {
         super(id, username, role);
     }
 
-    public void printListOfProducts() throws SQLException {
+    public static void printListOfProducts() throws SQLException {
         connection = DBconnection.connection();
         Statement st = connection.createStatement();
         rs = st.executeQuery("SELECT * FROM products");
@@ -36,43 +36,49 @@ public class Buyer extends User{
         return counter;
     }
 
-    public void insertOrder(int sellerID, ArrayList<Integer> productsList) throws SQLException {
+    public static void insertOrder(int sellerID, ArrayList<Integer> productsList) throws SQLException {
         connection = DBconnection.connection();
-        ps = connection.prepareStatement("INSERT INTO orders  (sellerID, buyerID, products) values (?, ? ,?)");
+        Integer[] productsIntegerList = new Integer[productsList.size()];
+        for (int i = 0; i < productsList.size(); i++) {
+            productsIntegerList[i] = productsList.get(i);
+        }
+        Array productArray = connection.createArrayOf("INTEGER", productsIntegerList);
+        ps = connection.prepareStatement("INSERT INTO orders  (seller_id, buyer_id, products) values (?, ? ,?)");
         ps.setInt(1, sellerID);
         ps.setInt(2, User.getCurrentUser().getId());
-        ps.setArray(3, (Array) productsList);
+        ps.setArray(3, productArray);
         ps.execute();
     }
 
-    public void buyProduct(ArrayList<Integer> productIDs) throws SQLException {
+    public static void buyProduct(ArrayList<Integer> productIDs) throws SQLException {
         connection = DBconnection.connection();
         Statement st = connection.createStatement();
+        Statement stProducts = connection.createStatement();
+
         userDatas = st.executeQuery("SELECT * FROM users");
-        productDatas = st.executeQuery("SELECT * FROM products");
 
         while (userDatas.next()) {
             ArrayList<Integer> productArray = new ArrayList<>();
-
             for (int i = 0; i < productIDs.size(); i++) {
-//                int currentProfuctID = productDatas.getInt("id");
+                productDatas = stProducts.executeQuery("SELECT * FROM products");
+
                 while (productDatas.next()) {
                     if(productDatas.getInt("id") == productIDs.get(i)) {
-                        if(productDatas.getInt("sellerID") == userDatas.getInt("id")) {
+                        if(productDatas.getInt("seller_id") == userDatas.getInt("id")) {
                             productArray.add(productIDs.get(i));
                         }
                     }
                 }
-
-                if (productArray.isEmpty()) {
-                    continue;
-                }
-
-                insertOrder(userDatas.getInt("id"), productArray);
             }
+
+            if (productArray.isEmpty()) {
+                continue;
+            }
+
+            insertOrder(userDatas.getInt("id"), productArray);
         }
 
-        ps = connection.prepareStatement("INSERT INTO orders (sellerID, buyerID, products) values (,  , products)");
+
         ps.execute();
     }
 }
