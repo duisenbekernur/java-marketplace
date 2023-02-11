@@ -1,7 +1,11 @@
+package com.company.auth;
+
+import com.company.entities.User;
+
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class Registration extends User{
+public class Registration extends User {
     static Scanner in = new Scanner(System.in);
 
     public Registration(String username, String password, String role) {

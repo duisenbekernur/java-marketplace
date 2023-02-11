@@ -1,3 +1,8 @@
+package com.company.entities;
+
+
+import com.company.data.DBconnection;
+
 import java.sql.*;
 
 public class Seller extends User {

@@ -1,18 +1,22 @@
+package com.company.entities;
+;
+
+import com.company.data.DBconnection;
+import com.company.entities.interfaces.IUser;
+
 import java.sql.*;
 
-public class User {
+public class User implements IUser {
     private int id;
+    private  String role;
+    private  String password;
     private String username;
-    private String password;
-    private String role;
     static Connection connection = null;
     static PreparedStatement ps =null;
     static ResultSet rs = null;
     private static User currentUser = null;
 
-    public User() {
-
-    }
+    public User() {}
 
     public static User getCurrentUser() {
         return currentUser;
@@ -28,7 +32,6 @@ public class User {
         this.role = role;
     }
 
-
     public User(int id, String username, String role) {
         this.id = id;
         this.username = username;
@@ -38,46 +41,33 @@ public class User {
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
-//    public User() {
-//    }
-
     public String getRole() {
         return role;
     }
-
     public void setRole(String role) {
         this.role = role;
     }
     public String getUsername() {
         return username;
     }
-
     public void setUsername(String username) {
         this.username = username;
     }
-
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
+
     @Override
     public String toString() {
         return "Username: " + getUsername() + ", role: " + getRole();
     }
-//    public static void connection(){
-//        try {
-//            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/marketplace", "postgers", "1079");
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//    } //добавить выбор категории для продавца
+
     public void showOwnProducts(){
         try {
             connection = DBconnection.connection();
@@ -93,6 +83,8 @@ public class User {
             System.out.println(e);
         }
     }
+
+    @Override
     public void insert() throws SQLException {
         connection = DBconnection.connection();
         ps = connection.prepareStatement("INSERT INTO users (username, password, role) values (?, ? ,?)");
