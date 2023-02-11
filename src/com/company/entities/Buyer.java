@@ -1,13 +1,18 @@
+package com.company.entities;
+
+import com.company.data.DBconnection;
+import com.company.entities.interfaces.IBuyer;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Buyer extends User{
+public class Buyer extends User implements IBuyer {
     private static Connection connection = null;
     private static PreparedStatement ps = null;;
-    private static ResultSet userDatas = null;
     private static ResultSet productDatas = null;
     static Scanner in = new Scanner(System.in);
+
 
     public Buyer(int id, String username, String role) {
         super(id, username, role);
@@ -16,7 +21,7 @@ public class Buyer extends User{
     public static void printListOfProducts() throws SQLException {
         connection = DBconnection.connection();
         Statement st = connection.createStatement();
-        rs = st.executeQuery("SELECT * FROM products");
+        ResultSet rs = st.executeQuery("SELECT * FROM products");
         while (rs.next()) {
             System.out.println(rs.getInt("id") + ") " + rs.getString("name") + ". Price: " + rs.getInt("price") + "₸" + rs.getArray("category"));
         }
@@ -28,8 +33,8 @@ public class Buyer extends User{
         Statement st = connection.createStatement();
         productDatas = st.executeQuery("SELECT * from products");
         while (productDatas.next()) {
-            for (int i = 0; i < productIDs.size(); i++) {
-                if(productDatas.getInt("id") == productIDs.get(i)) {
+            for (Integer productID : productIDs) {
+                if (productDatas.getInt("id") == productID) {
                     counter += productDatas.getInt("price");
                 }
             }
@@ -38,36 +43,22 @@ public class Buyer extends User{
         return counter;
     }
 
-    public static void insertOrder(int sellerID, ArrayList<Integer> productsList) throws SQLException {
-        connection = DBconnection.connection();
-        Integer[] productsIntegerList = new Integer[productsList.size()];
-        for (int i = 0; i < productsList.size(); i++) {
-            productsIntegerList[i] = productsList.get(i);
-        }
-        Array productArray = connection.createArrayOf("INTEGER", productsIntegerList);
-        ps = connection.prepareStatement("INSERT INTO orders  (seller_id, buyer_id, products) values (?, ? ,?)");
-        ps.setInt(1, sellerID);
-        ps.setInt(2, User.getCurrentUser().getId());
-        ps.setArray(3, productArray);
-        ps.execute();
-    }
-
     public static void buyProduct(ArrayList<Integer> productIDs) throws SQLException {
         connection = DBconnection.connection();
         Statement st = connection.createStatement();
         Statement stProducts = connection.createStatement();
 
-        userDatas = st.executeQuery("SELECT * FROM users");
+        ResultSet userDatas = st.executeQuery("SELECT * FROM users");
 
         while (userDatas.next()) {
             ArrayList<Integer> productArray = new ArrayList<>();
-            for (int i = 0; i < productIDs.size(); i++) {
+            for (Integer productID : productIDs) {
                 productDatas = stProducts.executeQuery("SELECT * FROM products");
 
                 while (productDatas.next()) {
-                    if(productDatas.getInt("id") == productIDs.get(i)) {
-                        if(productDatas.getInt("seller_id") == userDatas.getInt("id")) {
-                            productArray.add(productIDs.get(i));
+                    if (productDatas.getInt("id") == productID) {
+                        if (productDatas.getInt("seller_id") == userDatas.getInt("id")) {
+                            productArray.add(productID);
                         }
                     }
                 }
@@ -77,9 +68,8 @@ public class Buyer extends User{
                 continue;
             }
 
-            insertOrder(userDatas.getInt("id"), productArray);
+            Order.insertOrder(userDatas.getInt("id"), productArray);
         }
-
 
         ps.execute();
     }
