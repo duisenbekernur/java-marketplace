@@ -4,40 +4,45 @@ package com.company.entities;
 import com.company.data.DBconnection;
 import com.company.entities.interfaces.IUser;
 
+import java.rmi.server.RemoteRef;
 import java.sql.*;
+import java.util.Scanner;
 
 public class User implements IUser {
     private int id;
     private  String role;
     private  String password;
     private String username;
-    static Connection connection = null;
+    private double balance = 0;
+    static Connection connection = DBconnection.connection();
     static PreparedStatement ps =null;
     static ResultSet rs = null;
     private static User currentUser = null;
-
-    public User() {}
-
+    public User() throws SQLException {}
     public static User getCurrentUser() {
         return currentUser;
     }
-
     public static void setCurrentUser(User user) {
        currentUser = user;
     }
 
-    public User(String username, String password, String role) {
+    public User(String username, String password, String role) throws SQLException {
         this.username = username;
         this.password = password;
         this.role = role;
     }
-
-    public User(int id, String username, String role) {
+    public User(int id, String username, String role, double balance) throws SQLException {
         this.id = id;
         this.username = username;
         this.role = role;
+        this.balance =balance;
     }
-
+    public double getBalance() {
+        return balance;
+    }
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
     public int getId() {
         return id;
     }
@@ -62,36 +67,34 @@ public class User implements IUser {
     public void setPassword(String password) {
         this.password = password;
     }
-
     @Override
     public String toString() {
-        return "Username: " + getUsername() + ", role: " + getRole();
+        return "Username: " + getUsername() + ", role: " + getRole() + ", balance: " + getBalance();
     }
-
-    public void showOwnProducts(){
-        try {
-            connection = DBconnection.connection();
-            Statement stmt = connection.createStatement();
-            rs = stmt.executeQuery("SELECT * FROM products");
-            while(rs.next()){
-                if(rs.getInt("seller_id") == User.getCurrentUser().getId()) {
-                    System.out.println("Category: " + rs.getString("category") + ", ID: " + rs.getInt("id") + ", name: "
-                            + rs.getString("name")  + ", price: " + rs.getDouble("price"));
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
-    }
-
     @Override
     public void insert() throws SQLException {
-        connection = DBconnection.connection();
-        ps = connection.prepareStatement("INSERT INTO users (username, password, role) values (?, ? ,?)");
-        System.out.println(getUsername() + " " + getPassword() + " " + getRole());
+        ps = connection.prepareStatement("INSERT INTO users (username, password, role, balance) values (?, ? ,?, ?)");
         ps.setString(1, getUsername());
         ps.setString(2, getPassword());
         ps.setString(3, getRole());
+        ps.setDouble(4, getBalance());
         ps.executeUpdate();
+    }
+    static Scanner in = new Scanner(System.in);
+    public static void searchByCategory() throws SQLException {
+        System.out.println("Select a category: ");
+        Product.infoAllCategory();
+        int category_id = in.nextInt();
+        Product.infoByCategory(Product.allCategory.get(category_id-1));
+    }
+    public static double getBalance(int id) throws SQLException {
+        Statement statement = connection.createStatement();
+        rs = statement.executeQuery("SELECT * FROM users");
+        while (rs.next()){
+            if(id == rs.getInt("id")){
+                return rs.getDouble("balance");
+            }
+        }
+        return 0;
     }
 }

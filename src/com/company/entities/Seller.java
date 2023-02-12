@@ -4,40 +4,41 @@ package com.company.entities;
 import com.company.data.DBconnection;
 
 import java.sql.*;
+import java.util.Scanner;
 
 public class Seller extends User {
-    public Seller(String username, String password, String role) {
+    public Seller(String username, String password, String role) throws SQLException {
         super(username, password, role);
     }
+
+    public Seller(int id, String username, String role, double balance) throws SQLException {
+        super(id, username, role, balance);
+    }
+
     PreparedStatement ps = null;
-     Connection conn = null;
-     ResultSet rs = null;
+     Connection conn = DBconnection.connection();
+     static ResultSet rs = null;
+    static Scanner in = new Scanner(System.in);
 
-    public void addProduct(Product product) throws SQLException{
-        conn = DBconnection.connection();
-
-        try{
-            ps = conn.prepareStatement("INSERT INTO products (name,price,category) VALUES (?,?,?)");
-            ps.setString(1,product.getName());
-            ps.setDouble(2,product.getPrice());
-            ps.setString(3,product.getCategory());
-            ps.executeUpdate();
-        } catch(SQLException e){
-            throw new RuntimeException();
-        }
-
-    };
-
-    @Override
-    public void showOwnProducts() {
+    public static void addProduct() throws SQLException {
+        System.out.println("Write name of the product: ");
+        String name = in.next();
+        System.out.println("Price: ");
+        double price = in.nextDouble();
+        System.out.println("Choose the product category: ");
+        Product.infoAllCategory();
+        int categoryID = in.nextInt();
+        Product product = new Product(name, price, Product.allCategory.get(categoryID-1));
+        product.insert();
+    }
+    public static void showOwnProducts() {
         try {
-            conn = DBconnection.connection();
             Statement stmt = connection.createStatement();
             rs = stmt.executeQuery("SELECT * FROM products");
             while(rs.next()){
-                if(rs.getInt("id") == User.getCurrentUser().getId()) {
-                    System.out.println("Category: " + rs.getString("category") + "ID: " + rs.getInt("id") + ", name: "
-                            + rs.getString("name")  + ", price: " + rs.getDouble("price"));
+                if(rs.getInt("seller_id") == User.getCurrentUser().getId()) {
+                    System.out.println("Category: " + rs.getString("category") + ", ID: " + rs.getInt("id") + ", name: "
+                            + rs.getString("name")  + ", price: " + rs.getDouble("price") + "tenge");
                 }
             }
         } catch (SQLException e) {

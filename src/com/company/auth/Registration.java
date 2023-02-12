@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class Registration extends User {
     static Scanner in = new Scanner(System.in);
 
-    public Registration(String username, String password, String role) {
+    public Registration(String username, String password, String role) throws SQLException {
         super(username, password, role);
     }
 
@@ -19,7 +19,8 @@ public class Registration extends User {
         user.setUsername(username);
         System.out.println("Write password: ");
         String pass = in.next();
-        user.setPassword(checkPass(pass));
+        String correctPass = checkPass(pass);
+        user.setPassword(correctPass);
         System.out.println("Write role: 1) seller or 2) buyer");
         int role = in.nextInt();
         switch (role){
@@ -31,17 +32,17 @@ public class Registration extends User {
         logIn.login();
     }
     public static String checkPass(String pass){
-        if(!checkCorrectPassword(pass)){
+        String password = null;
+        if(checkCorrectPassword(pass)) return pass;
+        else {
             System.out.println("Your password is weak! It should contain both large and small letters and numbers");
-            String password = in.next();
+            password = in.next();
             checkPass(password);
         }
-        return pass;
+        return password;
     }
     public static boolean checkCorrectPassword(String password) {
-        boolean validOne = false;
-        boolean validTwo = false;
-        boolean validThree = false;
+        boolean validOne = false, validTwo = false, validThree = false;
         if (password.length() < 8) return false;
         for (int i = 0; i < password.length(); i++) {
             char c = password.charAt(i);
