@@ -1,35 +1,31 @@
 package com.company.entities;
 
+import com.company.Main;
 import com.company.data.DBconnection;
-import com.company.entities.interfaces.IBuyer;
+import com.company.entities.interfaces.RoleCheck;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Buyer extends User implements IBuyer {
-    private static Connection connection = null;
+public class Buyer extends User{
+    private static Connection connection = DBconnection.connection();
     private static PreparedStatement ps = null;;
     private static ResultSet productDatas = null;
     static Scanner in = new Scanner(System.in);
-
-
-    public Buyer(int id, String username, String role) {
-        super(id, username, role);
+    public Buyer(int id, String username, String role, double balance) throws SQLException {
+        super(id, username, role, balance);
     }
-
     public static void printListOfProducts() throws SQLException {
-        connection = DBconnection.connection();
         Statement st = connection.createStatement();
         ResultSet rs = st.executeQuery("SELECT * FROM products");
         while (rs.next()) {
-            System.out.println(rs.getInt("id") + ") " + rs.getString("name") + ". Price: " + rs.getInt("price") + "₸" + rs.getArray("category"));
+            System.out.println(rs.getInt("id") + ") " + rs.getString("name") + ". Price: " + rs.getInt("price") + "₸ , category: " + rs.getArray("category"));
         }
+        System.out.println("");
     }
-
-    public static long getAllPrice(ArrayList<Integer> productIDs) throws SQLException {
+    public static double getAllPrice(ArrayList<Integer> productIDs) throws SQLException {
         long counter = 0;
-        connection = DBconnection.connection();
         Statement st = connection.createStatement();
         productDatas = st.executeQuery("SELECT * from products");
         while (productDatas.next()) {
@@ -39,22 +35,18 @@ public class Buyer extends User implements IBuyer {
                 }
             }
         }
-
         return counter;
     }
 
     public static void buyProduct(ArrayList<Integer> productIDs) throws SQLException {
-        connection = DBconnection.connection();
         Statement st = connection.createStatement();
         Statement stProducts = connection.createStatement();
-
         ResultSet userDatas = st.executeQuery("SELECT * FROM users");
 
         while (userDatas.next()) {
             ArrayList<Integer> productArray = new ArrayList<>();
             for (Integer productID : productIDs) {
                 productDatas = stProducts.executeQuery("SELECT * FROM products");
-
                 while (productDatas.next()) {
                     if (productDatas.getInt("id") == productID) {
                         if (productDatas.getInt("seller_id") == userDatas.getInt("id")) {
@@ -63,15 +55,11 @@ public class Buyer extends User implements IBuyer {
                     }
                 }
             }
-
             if (productArray.isEmpty()) {
                 continue;
             }
-
             Order.insertOrder(userDatas.getInt("id"), productArray);
         }
-
-        ps.execute();
     }
 
     public static void buyProductMenu() throws SQLException {
@@ -84,10 +72,28 @@ public class Buyer extends User implements IBuyer {
             int id = in.nextInt();
             idsOfProducts.add(id);
         }
-
+        if(User.getCurrentUser().getBalance() - Buyer.getAllPrice(idsOfProducts)<0){
+            System.out.println("Insufficient funds");
+            Main.forTheBuyer();
+        }
         Buyer.buyProduct(idsOfProducts);
-
         System.out.println("All price: " + Buyer.getAllPrice(idsOfProducts));
+        updateBalance(User.getCurrentUser().getBalance() - Buyer.getAllPrice(idsOfProducts));
+        User.getCurrentUser().setBalance(User.getCurrentUser().getBalance() - Buyer.getAllPrice(idsOfProducts));
         System.out.println("Thank you for your purchase!!! \n\n");
+    }
+    public static void topUp() throws SQLException {
+        System.out.println("Write the amount of money");
+        double balance = in.nextDouble();
+        User.getCurrentUser().setBalance(User.getBalance(User.getCurrentUser().getId())+balance);
+        updateBalance(User.getCurrentUser().getBalance());
+        System.out.println(User.getCurrentUser());
+        RoleCheck.check();
+    }
+    public static void updateBalance(Double balance) throws SQLException {
+        ps = connection.prepareStatement("UPDATE users SET balance = ? WHERE id = ?");
+        ps.setDouble(1, balance);
+        ps.setInt(2, User.getCurrentUser().getId());
+        ps.execute();
     }
 }
