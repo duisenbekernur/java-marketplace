@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Buyer extends User{
+
     private static Connection connection = DBconnection.connection();
     private static PreparedStatement ps = null;;
     private static ResultSet productDatas = null;
@@ -76,12 +77,14 @@ public class Buyer extends User{
             System.out.println("Insufficient funds");
             Main.forTheBuyer();
         }
+
         Buyer.buyProduct(idsOfProducts);
         System.out.println("All price: " + Buyer.getAllPrice(idsOfProducts));
         updateBalance(User.getCurrentUser().getBalance() - Buyer.getAllPrice(idsOfProducts));
         User.getCurrentUser().setBalance(User.getCurrentUser().getBalance() - Buyer.getAllPrice(idsOfProducts));
         System.out.println("Thank you for your purchase!!! \n\n");
     }
+
     public static void topUp() throws SQLException {
         System.out.println("Write the amount of money");
         double balance = in.nextDouble();
@@ -90,6 +93,7 @@ public class Buyer extends User{
         System.out.println(User.getCurrentUser());
         RoleCheck.check();
     }
+
     public static void updateBalance(Double balance) throws SQLException {
         ps = connection.prepareStatement("UPDATE users SET balance = ? WHERE id = ?");
         ps.setDouble(1, balance);
